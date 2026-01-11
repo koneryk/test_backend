@@ -1,25 +1,19 @@
-const http = require("http");
-const fs = require("fs");
-  
-http.createServer(function(request, response){
-      
-    console.log(`Запрошенный адрес: ${request.url}`);
-    // получаем путь после слеша
-    let filePath = request.url.substring(1);
-    if (filePath === "" ){
-        filePath = "index.html"
-    }
-    fs.readFile(filePath, function(error, data){
-              
-        if(error){
-                  
-            response.statusCode = 404;
-            response.end("Resourse not found!");
-        }   
-        else{
-            response.end(data);
-        }
-    });
-}).listen(3000, function(){
-    console.log("Server started at 3000");
+const express = require("express");
+ 
+const app = express();
+app.use(function(_, _, next){
+     
+    console.log("Middleware 1");
+    next();
 });
+app.use("/about", function(_, response){
+     
+    console.log("About Middleware");
+    response.send("About Middleware");
+});
+ 
+app.get("/", function(_, response){
+    console.log("Route /");
+    response.send("Hello");
+});
+app.listen(3000);
